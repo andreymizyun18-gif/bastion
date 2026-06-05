@@ -1,0 +1,1358 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bastion Team</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+          --bg-primary: #0B0F19;
+          --bg-secondary: #111827;
+          --bg-glass: rgba(17, 24, 39, 0.55);
+          --border-glass: rgba(255, 255, 255, 0.08);
+          --accent-cyan: #2DD4BF;
+          --accent-blue: #3B82F6;
+          --accent-purple: #8B5CF6;
+          --text-primary: #F1F5F9;
+          --text-secondary: #94A3B8;
+          --radius: 20px;
+          --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
+
+      * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+      }
+
+      html {
+          scroll-behavior: smooth;
+      }
+
+      body {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          background: var(--bg-primary);
+          color: var(--text-primary);
+          overflow-x: hidden;
+          line-height: 1.6;
+      }
+
+      body.modal-open {
+          overflow: hidden;
+      }
+
+      .bg-mesh {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          z-index: -2;
+          background:
+              radial-gradient(ellipse at 20% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 80%, rgba(45, 212, 191, 0.1) 0%, transparent 50%),
+              radial-gradient(ellipse at 50% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 60%),
+              var(--bg-primary);
+          pointer-events: none;
+      }
+
+      .gear-bg {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          width: 600px;
+          height: 600px;
+          opacity: 0.06;
+          z-index: -1;
+          pointer-events: none;
+          filter: drop-shadow(0 0 60px rgba(45, 212, 191, 0.2));
+          transform: translate(-50%, -50%);
+      }
+
+      .gear-bg svg {
+          width: 100%;
+          height: 100%;
+          animation: gearPulse 8s ease-in-out infinite;
+      }
+
+      @keyframes gearPulse {
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 1; }
+      }
+
+      header {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          z-index: 100;
+          padding: 16px 32px;
+          background: rgba(11, 15, 25, 0.7);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-bottom: 1px solid var(--border-glass);
+          transition: var(--transition);
+      }
+
+      header.scrolled {
+          background: rgba(11, 15, 25, 0.9);
+          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .header-inner {
+          max-width: 1200px;
+          margin: 0 auto;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+      }
+
+      .logo {
+          font-size: 20px;
+          font-weight: 800;
+          letter-spacing: -0.5px;
+          background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          text-decoration: none;
+          cursor: pointer;
+      }
+
+      nav ul {
+          display: flex;
+          list-style: none;
+          gap: 32px;
+      }
+
+      nav a {
+          color: var(--text-secondary);
+          text-decoration: none;
+          font-size: 14px;
+          font-weight: 500;
+          transition: var(--transition);
+          position: relative;
+      }
+
+      nav a::after {
+          content: '';
+          position: absolute;
+          bottom: -6px;
+          left: 0;
+          width: 0;
+          height: 2px;
+          background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+          transition: width 0.3s ease;
+          border-radius: 2px;
+      }
+
+      nav a:hover {
+          color: var(--text-primary);
+      }
+
+      nav a:hover::after {
+          width: 100%;
+      }
+
+      .burger-menu {
+          display: none;
+          flex-direction: column;
+          gap: 5px;
+          cursor: pointer;
+          background: none;
+          border: none;
+          padding: 5px;
+      }
+
+      .burger-menu span {
+          display: block;
+          width: 24px;
+          height: 2px;
+          background: var(--text-primary);
+          border-radius: 2px;
+          transition: 0.3s;
+      }
+
+      .hero {
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          padding: 140px 20px 80px;
+          position: relative;
+      }
+
+      .hero h1 {
+          font-size: clamp(40px, 8vw, 80px);
+          font-weight: 800;
+          letter-spacing: -2px;
+          line-height: 1.1;
+          margin-bottom: 24px;
+          background: linear-gradient(135deg, #fff 0%, var(--accent-cyan) 50%, var(--accent-blue) 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: fadeInUp 1s ease-out;
+      }
+
+      .hero-subtitle {
+          font-size: clamp(16px, 2.5vw, 22px);
+          color: var(--text-secondary);
+          font-weight: 400;
+          max-width: 600px;
+          animation: fadeInUp 1s ease-out 0.2s both;
+      }
+
+      .hero-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          margin-top: 40px;
+          padding: 10px 20px;
+          background: var(--bg-glass);
+          border: 1px solid var(--border-glass);
+          border-radius: 100px;
+          font-size: 13px;
+          color: var(--accent-cyan);
+          animation: fadeInUp 1s ease-out 0.4s both;
+          backdrop-filter: blur(10px);
+      }
+
+      .hero-badge::before {
+          content: '';
+          width: 8px;
+          height: 8px;
+          background: var(--accent-cyan);
+          border-radius: 50%;
+          box-shadow: 0 0 10px var(--accent-cyan);
+          animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+      }
+
+      @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+      }
+
+      section {
+          padding: 100px 20px;
+          max-width: 1200px;
+          margin: 0 auto;
+          position: relative;
+      }
+
+      .section-title {
+          font-size: clamp(28px, 4vw, 40px);
+          font-weight: 700;
+          text-align: center;
+          margin-bottom: 60px;
+          letter-spacing: -1px;
+          position: relative;
+          display: inline-block;
+          left: 50%;
+          transform: translateX(-50%);
+      }
+
+      .section-title span {
+          background: linear-gradient(135deg, #fff, var(--accent-cyan));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+      }
+
+      .section-title::after {
+          content: '';
+          position: absolute;
+          bottom: -12px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 60px;
+          height: 4px;
+          background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+          border-radius: 2px;
+      }
+
+      .glass {
+          background: var(--bg-glass);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid var(--border-glass);
+          border-radius: var(--radius);
+          padding: 40px;
+          transition: var(--transition);
+      }
+
+      .glass:hover {
+          border-color: rgba(45, 212, 191, 0.2);
+          box-shadow: 0 8px 32px rgba(45, 212, 191, 0.1);
+      }
+
+      .about-content {
+          max-width: 800px;
+          margin: 0 auto;
+          text-align: center;
+      }
+
+      .about-content p {
+          font-size: 16px;
+          color: var(--text-secondary);
+          margin-bottom: 20px;
+          line-height: 1.8;
+      }
+
+      .about-content p strong {
+          color: var(--text-primary);
+          font-weight: 600;
+      }
+
+      .timeline {
+          display: flex;
+          justify-content: space-between;
+          gap: 24px;
+          position: relative;
+      }
+
+      .timeline::before {
+          content: '';
+          position: absolute;
+          top: 24px;
+          left: 0;
+          width: 100%;
+          height: 2px;
+          background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue), var(--accent-purple));
+          z-index: 0;
+          opacity: 0.3;
+      }
+
+      .timeline-item {
+          position: relative;
+          z-index: 1;
+          background: var(--bg-glass);
+          backdrop-filter: blur(16px);
+          border: 1px solid var(--border-glass);
+          border-radius: var(--radius);
+          padding: 30px;
+          width: 32%;
+          transition: var(--transition);
+      }
+
+      .timeline-item::before {
+          content: '';
+          position: absolute;
+          top: -6px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 14px;
+          height: 14px;
+          background: var(--accent-cyan);
+          border-radius: 50%;
+          box-shadow: 0 0 20px var(--accent-cyan);
+          border: 3px solid var(--bg-primary);
+      }
+
+      .timeline-item:hover {
+          transform: translateY(-8px);
+          border-color: rgba(45, 212, 191, 0.3);
+          box-shadow: 0 12px 40px rgba(45, 212, 191, 0.15);
+      }
+
+      .timeline-item h3 {
+          font-size: 14px;
+          font-weight: 700;
+          color: var(--accent-cyan);
+          margin-bottom: 16px;
+          margin-top: 10px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+      }
+
+      .timeline-item ul {
+          list-style: none;
+          font-size: 14px;
+          color: var(--text-secondary);
+      }
+
+      .timeline-item li {
+          margin-bottom: 10px;
+          position: relative;
+          padding-left: 18px;
+      }
+
+      .timeline-item li::before {
+          content: '›';
+          position: absolute;
+          left: 0;
+          color: var(--accent-cyan);
+          font-weight: 700;
+      }
+
+      .grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 24px;
+      }
+
+      .card {
+          background: var(--bg-glass);
+          backdrop-filter: blur(16px);
+          border: 1px solid var(--border-glass);
+          border-radius: var(--radius);
+          padding: 32px;
+          transition: var(--transition);
+          position: relative;
+          overflow: hidden;
+      }
+
+      .card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 3px;
+          background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+          opacity: 0;
+          transition: opacity 0.3s;
+      }
+
+      .card:hover {
+          transform: translateY(-6px);
+          border-color: rgba(45, 212, 191, 0.25);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(45, 212, 191, 0.1);
+      }
+
+      .card:hover::before {
+          opacity: 1;
+      }
+
+      .card h3 {
+          font-size: 16px;
+          font-weight: 700;
+          color: var(--accent-cyan);
+          margin-bottom: 12px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+      }
+
+      .card p {
+          font-size: 14px;
+          color: var(--text-secondary);
+          line-height: 1.7;
+      }
+
+      .reviews-container {
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+          max-width: 800px;
+          margin: 0 auto;
+      }
+
+      blockquote {
+          background: var(--bg-glass);
+          backdrop-filter: blur(16px);
+          border-left: 4px solid var(--accent-purple);
+          border-radius: 0 var(--radius) var(--radius) 0;
+          padding: 28px 32px;
+          transition: var(--transition);
+          position: relative;
+      }
+
+      blockquote:hover {
+          border-left-color: var(--accent-cyan);
+          transform: translateX(8px);
+      }
+
+      blockquote p {
+          font-size: 15px;
+          color: var(--text-secondary);
+          font-style: italic;
+          line-height: 1.7;
+          margin-bottom: 12px;
+      }
+
+      blockquote cite {
+          font-size: 13px;
+          color: var(--accent-cyan);
+          font-weight: 600;
+          font-style: normal;
+          display: block;
+          text-align: right;
+      }
+
+      .review-link {
+          display: block;
+          text-align: center;
+          margin-top: 40px;
+          color: var(--accent-cyan);
+          font-size: 14px;
+          font-weight: 600;
+          text-decoration: none;
+          transition: var(--transition);
+      }
+
+      .review-link:hover {
+          color: #fff;
+          text-shadow: 0 0 20px var(--accent-cyan);
+      }
+
+      .team-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 32px;
+          perspective: 2000px;
+      }
+
+      .team-card {
+          position: relative;
+          border-radius: var(--radius);
+          transform-style: preserve-3d;
+          transition: transform 0.1s ease-out;
+          cursor: pointer;
+      }
+
+      .team-card-inner {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 1240 / 1754;
+          border-radius: var(--radius);
+          overflow: hidden;
+          background: linear-gradient(135deg, rgba(45, 212, 191, 0.1), rgba(59, 130, 246, 0.1));
+          border: 2px solid transparent;
+          background-clip: padding-box;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      }
+
+      .team-card-inner::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: var(--radius);
+          padding: 2px;
+          background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue), var(--accent-purple));
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          pointer-events: none;
+          z-index: 2;
+      }
+
+      .glare {
+          position: absolute;
+          inset: 0;
+          border-radius: var(--radius);
+          pointer-events: none;
+          z-index: 3;
+          opacity: 0;
+          transition: opacity 0.3s;
+          mix-blend-mode: overlay;
+      }
+
+      .team-card:hover .glare {
+          opacity: 1;
+      }
+
+      .team-card .art {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.5s ease;
+      }
+
+      .team-card:hover .art {
+          transform: scale(1.05);
+      }
+
+      .team-card .info {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 24px;
+          background: linear-gradient(to top, rgba(11,15,25,0.95) 0%, rgba(11,15,25,0.6) 60%, transparent 100%);
+          z-index: 4;
+          transform: translateZ(20px);
+      }
+
+      .team-card .info .name {
+          font-size: 18px;
+          font-weight: 700;
+          color: #fff;
+          margin-bottom: 4px;
+          letter-spacing: -0.3px;
+      }
+
+      .team-card .info .role {
+          font-size: 13px;
+          color: var(--accent-cyan);
+          font-weight: 600;
+          margin-bottom: 8px;
+      }
+
+      .team-card .info .nick {
+          font-size: 12px;
+          color: var(--text-secondary);
+          font-family: monospace;
+          background: rgba(255,255,255,0.05);
+          padding: 2px 8px;
+          border-radius: 4px;
+          display: inline-block;
+      }
+
+      .team-card .info .skills {
+          font-size: 12px;
+          color: var(--text-secondary);
+          margin-top: 10px;
+          line-height: 1.5;
+          opacity: 0;
+          transform: translateY(10px);
+          transition: all 0.3s ease;
+      }
+
+      .team-card:hover .info .skills {
+          opacity: 1;
+          transform: translateY(0);
+      }
+
+      .rarity-badge {
+          position: absolute;
+          top: 16px;
+          right: 16px;
+          z-index: 5;
+          padding: 4px 12px;
+          background: rgba(11,15,25,0.8);
+          border: 1px solid rgba(45, 212, 191, 0.3);
+          border-radius: 100px;
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          color: var(--accent-cyan);
+          backdrop-filter: blur(10px);
+          transform: translateZ(30px);
+      }
+
+      .rarity-badge.legendary {
+          border-color: rgba(251, 191, 36, 0.4);
+          color: #fbbf24;
+          background: rgba(251, 191, 36, 0.1);
+      }
+
+      .rarity-badge.epic {
+          border-color: rgba(139, 92, 246, 0.4);
+          color: #a78bfa;
+          background: rgba(139, 92, 246, 0.1);
+      }
+
+      .rarity-badge.rare {
+          border-color: rgba(59, 130, 246, 0.4);
+          color: #60a5fa;
+          background: rgba(59, 130, 246, 0.1);
+      }
+
+      .rarity-badge.common {
+          border-color: rgba(148, 163, 184, 0.4);
+          color: #cbd5e1;
+          background: rgba(148, 163, 184, 0.1);
+      }
+
+      footer {
+          background: rgba(11, 15, 25, 0.8);
+          border-top: 1px solid var(--border-glass);
+          padding: 60px 20px 40px;
+          text-align: center;
+          backdrop-filter: blur(10px);
+      }
+
+      .footer-email {
+          color: var(--accent-cyan);
+          font-size: 18px;
+          font-weight: 600;
+          text-decoration: none;
+          transition: var(--transition);
+          display: inline-block;
+          margin-bottom: 24px;
+      }
+
+      .footer-email:hover {
+          color: #fff;
+          text-shadow: 0 0 20px var(--accent-cyan);
+          transform: scale(1.05);
+      }
+
+      .copyright {
+          font-size: 13px;
+          color: var(--text-secondary);
+          margin-top: 8px;
+      }
+
+      .footer-links {
+          display: flex;
+          justify-content: center;
+          gap: 24px;
+          margin-bottom: 32px;
+      }
+
+      .footer-links a {
+          color: var(--text-secondary);
+          text-decoration: none;
+          font-size: 13px;
+          transition: color 0.3s;
+      }
+
+      .footer-links a:hover {
+          color: var(--accent-cyan);
+      }
+
+      .requisites {
+          display: none;
+      }
+
+      /* Modal */
+      .modal-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(11, 15, 25, 0.85);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          z-index: 1000;
+          display: none;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+      }
+
+      .modal-overlay.active {
+          display: flex;
+          opacity: 1;
+      }
+
+      .modal {
+          background: var(--bg-glass);
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
+          border: 1px solid var(--border-glass);
+          border-radius: var(--radius);
+          width: 100%;
+          max-width: 800px;
+          max-height: 90vh;
+          overflow: hidden;
+          position: relative;
+          transform: scale(0.92) translateY(20px);
+          transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+          display: flex;
+          flex-direction: row;
+      }
+
+      .modal-overlay.active .modal {
+          transform: scale(1) translateY(0);
+      }
+
+      .modal-close {
+          position: absolute;
+          top: 20px;
+          right: 20px;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: rgba(255,255,255,0.08);
+          border: 1px solid var(--border-glass);
+          color: var(--text-primary);
+          font-size: 22px;
+          line-height: 1;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: var(--transition);
+          z-index: 10;
+      }
+
+      .modal-close:hover {
+          background: rgba(255,255,255,0.15);
+          border-color: rgba(45, 212, 191, 0.3);
+          transform: rotate(90deg);
+          color: var(--accent-cyan);
+      }
+
+      .modal-image-wrap {
+          position: relative;
+          overflow: hidden;
+          border-radius: var(--radius) 0 0 var(--radius);
+          background: linear-gradient(135deg, #1e293b, #0f172a);
+          flex-shrink: 0;
+          width: 320px;
+          max-height: 90vh;
+      }
+
+      .modal-image-wrap img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+      }
+
+      .modal-body {
+          padding: 40px;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+          overflow-y: auto;
+          max-height: 90vh;
+          flex: 1;
+      }
+
+      .modal-header {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+      }
+
+      .modal-name {
+          font-size: 26px;
+          font-weight: 800;
+          color: #fff;
+          letter-spacing: -0.5px;
+      }
+
+      .modal-role {
+          font-size: 13px;
+          color: var(--accent-cyan);
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1.5px;
+      }
+
+      .modal-nick {
+          font-size: 13px;
+          color: var(--text-secondary);
+          font-family: monospace;
+          background: rgba(255,255,255,0.06);
+          padding: 4px 10px;
+          border-radius: 6px;
+          display: inline-block;
+          width: fit-content;
+          margin-top: 4px;
+          border: 1px solid var(--border-glass);
+      }
+
+      .modal-section h4 {
+          font-size: 11px;
+          font-weight: 700;
+          color: var(--accent-cyan);
+          text-transform: uppercase;
+          letter-spacing: 1.5px;
+          margin-bottom: 10px;
+      }
+
+      .modal-section p,
+      .modal-section ul {
+          font-size: 14px;
+          color: var(--text-secondary);
+          line-height: 1.7;
+      }
+
+      .modal-section ul {
+          list-style: none;
+          padding: 0;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+      }
+
+      .modal-section ul li {
+          background: rgba(255,255,255,0.04);
+          border: 1px solid var(--border-glass);
+          padding: 4px 12px;
+          border-radius: 6px;
+          font-size: 13px;
+      }
+
+      .modal-about {
+          font-style: italic;
+          border-left: 3px solid var(--accent-cyan);
+          padding-left: 16px;
+      }
+
+      .modal-contacts {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+      }
+
+      .modal-contact {
+          font-size: 13px;
+          color: var(--text-secondary);
+          background: rgba(255,255,255,0.04);
+          padding: 8px 14px;
+          border-radius: 8px;
+          border: 1px solid var(--border-glass);
+          text-decoration: none;
+          transition: var(--transition);
+          display: flex;
+          align-items: center;
+          gap: 6px;
+      }
+
+      .modal-contact:hover {
+          border-color: var(--accent-cyan);
+          color: var(--accent-cyan);
+          background: rgba(45, 212, 191, 0.08);
+      }
+
+      .modal-contact svg {
+          width: 14px;
+          height: 14px;
+      }
+
+      @media (max-width: 768px) {
+          header {
+              padding: 12px 16px;
+          }
+
+          nav ul {
+              display: none;
+              flex-direction: column;
+              position: absolute;
+              top: 100%;
+              left: 0;
+              width: 100%;
+              background: rgba(11, 15, 25, 0.98);
+              border-bottom: 1px solid var(--border-glass);
+              padding: 24px;
+              gap: 20px;
+              backdrop-filter: blur(20px);
+          }
+
+          nav ul.active {
+              display: flex;
+          }
+
+          .burger-menu {
+              display: flex;
+          }
+
+          .timeline {
+              flex-direction: column;
+              gap: 40px;
+          }
+
+          .timeline::before {
+              display: none;
+          }
+
+          .timeline-item {
+              width: 100%;
+          }
+
+          .timeline-item::before {
+              display: none;
+          }
+
+          .grid, .team-grid {
+              grid-template-columns: 1fr;
+          }
+
+          .hero h1 {
+              font-size: 40px;
+          }
+
+          .modal {
+              flex-direction: column;
+              max-height: 85vh;
+          }
+
+          .modal-image-wrap {
+              width: 100%;
+              height: 240px;
+              border-radius: var(--radius) var(--radius) 0 0;
+          }
+
+          .modal-body {
+              padding: 28px;
+              gap: 20px;
+          }
+
+          .modal-name {
+              font-size: 22px;
+          }
+      }
+
+      .reveal {
+          opacity: 0;
+          transform: translateY(40px);
+          transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
+
+      .reveal.active {
+          opacity: 1;
+          transform: translateY(0);
+      }
+
+      ::-webkit-scrollbar {
+          width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+          background: var(--bg-primary);
+      }
+
+      ::-webkit-scrollbar-thumb {
+          background: linear-gradient(var(--accent-cyan), var(--accent-blue));
+          border-radius: 4px;
+      }
+
+      .modal-body::-webkit-scrollbar {
+          width: 6px;
+      }
+
+      .modal-body::-webkit-scrollbar-thumb {
+          background: rgba(255,255,255,0.15);
+          border-radius: 3px;
+      }
+    </style>
+  <base target="_blank">
+</head>
+  <body>
+    <div class="bg-mesh"></div>
+
+    <div class="gear-bg" id="gear">
+      <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="gearGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color: #2dd4bf; stop-opacity: 1" />
+            <stop offset="50%" style="stop-color: #3b82f6; stop-opacity: 1" />
+            <stop offset="100%" style="stop-color: #8b5cf6; stop-opacity: 1" />
+          </linearGradient>
+        </defs>
+        <g fill="url(#gearGrad)">
+          <path
+            d="M491.584,192.576l-55.918-6.914c-0.919-2.351-1.884-4.681-2.892-6.991l34.648-44.429
+                    c7.227-9.266,6.412-22.464-1.901-30.773l-57.028-56.996c-8.31-8.304-21.501-9.114-30.762-1.891l-44.414,34.633
+                    c-2.31-1.01-4.642-1.975-6.994-2.895l-6.915-55.903C317.966,8.755,308.061,0,296.311,0h-80.635
+                    c-11.748,0-21.655,8.758-23.097,20.416l-6.912,55.904c-2.351,0.92-4.682,1.884-6.988,2.892l-44.417-34.641
+                    c-9.266-7.225-22.46-6.414-30.768,1.893l-57.021,57.009c-8.308,8.307-9.123,21.506-1.896,30.771l34.644,44.417
+                    c-1.01,2.312-1.977,4.647-2.898,7.002l-55.906,6.915C8.757,194.02,0,203.925,0,215.675v80.64c0,11.751,8.758,21.658,20.421,23.099
+                    l55.9,6.901c0.92,2.354,1.885,4.686,2.894,6.994l-34.639,44.42c-7.224,9.264-6.412,22.46,1.894,30.766l57.021,57.031
+                    c8.307,8.308,21.507,9.123,30.771,1.896l44.418-34.648c2.306,1.007,4.636,1.972,6.985,2.889l6.914,55.921
+                    C194.02,503.245,203.926,512,215.676,512h80.637c11.748,0,21.654-8.755,23.097-20.415l6.915-55.921
+                    c2.352-0.919,4.684-1.884,6.993-2.892l44.424,34.65c9.269,7.227,22.463,6.412,30.773-1.897l57.015-57.031
+                    c8.305-8.307,9.117-21.504,1.891-30.767l-34.639-44.409c1.01-2.313,1.977-4.648,2.897-7.004l55.9-6.903
+                    C503.242,317.971,512,308.066,512,296.313v-80.64C512,203.925,503.243,194.019,491.584,192.576z M255.997,310.301
+                    c-29.941,0-54.3-24.354-54.3-54.294c0-29.946,24.359-54.309,54.3-54.309c29.944,0,54.306,24.363,54.306,54.309
+                    C310.303,285.947,285.941,310.301,255.997,310.301z"
+          />
+        </g>
+      </svg>
+    </div>
+
+    <header id="header">
+      <div class="header-inner">
+        <a href="#hero" class="logo" id="logoLink">BASTION TEAM</a>
+        <button class="burger-menu" id="burger" aria-label="Меню">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <nav>
+          <ul id="nav-menu">
+            <li><a href="#about" class="nav-link">О команде</a></li>
+            <li><a href="#roadmap" class="nav-link">Дорожная карта</a></li>
+            <li><a href="#projects" class="nav-link">Проекты</a></li>
+            <li><a href="#reviews" class="nav-link">Отзывы</a></li>
+            <li><a href="#team" class="nav-link">Команда</a></li>
+            <li><a href="#contacts" class="nav-link">Контакты</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="hero" id="hero">
+      <h1>BASTION TEAM</h1>
+      <div class="hero-subtitle">
+        Инженерный подход и командная работа в сфере ИТ-инфраструктуры,
+        безопасности и разработки
+      </div>
+      <div class="hero-badge">Статус: активный набор проектов</div>
+    </div>
+
+    <section id="about">
+      <h2 class="section-title"><span>О КОМАНДЕ</span></h2>
+      <div class="glass about-content reveal">
+        <p>
+          <strong>Bastion Team</strong> - это объединение специалистов,
+          сфокусированных на создании отказоустойчивых и производительных
+          ИТ-решений. Мы верим, что ключ к успеху лежит через глубокий
+          инженерный анализ и синергию внутри коллектива.
+        </p>
+        <p>
+          Мы не просто пишем код, мы проектируем цифровую экосистему: от
+          низкоуровневой настройки серверов до безопасности конечных
+          интерфейсов. Каждый продукт контролируется от идеи до финального
+          релиза.
+        </p>
+      </div>
+    </section>
+
+    <section id="roadmap">
+      <h2 class="section-title"><span>ДОРОЖНАЯ КАРТА</span></h2>
+      <div class="timeline reveal">
+        <div class="timeline-item">
+          <h3>Старт</h3>
+          <ul>
+            <li>Свой сайт</li>
+            <li>Своя инфраструктура</li>
+            <li>Интерактивное портфолио</li>
+          </ul>
+        </div>
+        <div class="timeline-item">
+          <h3>Развитие</h3>
+          <ul>
+            <li>Свой сервис виртуализации</li>
+            <li>Своё семейство ОС на базе Linux</li>
+            <li>Программы для своей ОС</li>
+          </ul>
+        </div>
+        <div class="timeline-item">
+          <h3>Масштаб</h3>
+          <ul>
+            <li>Выход на рынок со своими продуктами</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects">
+      <h2 class="section-title"><span>ПРОЕКТЫ</span></h2>
+      <div class="grid reveal">
+        <div class="card">
+          <h3>Игровой сервер</h3>
+          <p>
+            Разработка архитектуры и развертывание масштабируемых игровых
+            решений с минимальными задержками и высоким uptime.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Инфраструктура</h3>
+          <p>
+            Построение надежных отказоустойчивых сетей и серверов под высокие
+            корпоративные нагрузки и 24/7 эксплуатацию.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Домашняя виртуализация</h3>
+          <p>
+            Создание кастомных сред гипервизоров для локальных тестов,
+            лабораторий и оптимизации рабочих процессов.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="reviews">
+      <h2 class="section-title"><span>ОТЗЫВЫ</span></h2>
+      <div class="reviews-container reveal">
+        <blockquote>
+          <p>
+            "Ребята из Bastion Team помогли нам полностью перестроить
+            архитектуру серверов. Скорость работы выросла в разы, а про падения
+            мы вообще забыли. Настоящие инженеры!"
+          </p>
+          <cite>- Пользователь форума (id: 4829)</cite>
+        </blockquote>
+        <blockquote>
+          <p>
+            "Отличный подход к ИБ-аудиту. Нашли критические уязвимости там, где
+            другие специалисты даже не смотрели. Рекомендую к сотрудничеству."
+          </p>
+          <cite>- Модератор TechForum</cite>
+        </blockquote>
+      </div>
+      <a
+        href="https://forum.example.com/bastion-reviews"
+        target="_blank"
+        class="review-link"
+        >Читать все отзывы на форуме →</a
+      >
+    </section>
+
+    <section id="team">
+      <h2 class="section-title"><span>НАША КОМАНДА</span></h2>
+      <div class="team-grid reveal">
+        <div class="team-card" data-tilt data-id="angro">
+          <div class="team-card-inner">
+            <div class="glare"></div>
+            <span class="rarity-badge legendary">Legendary</span>
+            <img src="img/angro.png" alt="Балабанов Мирон" class="art" />
+            <div class="info">
+              <div class="name">Балабанов Мирон</div>
+              <div class="role">Проджект менеджер</div>
+              <span class="nick">Angro</span>
+              <div class="skills">
+                Управление рисками, SCRUM, Agile, планирование спринтов
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-card" data-tilt data-id="yarok">
+          <div class="team-card-inner">
+            <div class="glare"></div>
+            <span class="rarity-badge epic">Epic</span>
+            <img src="img/yarok.png" alt="Кирсанов Ярослав" class="art" />
+            <div class="info">
+              <div class="name">Кирсанов Ярослав</div>
+              <div class="role">Бэкенд-разработчик</div>
+              <span class="nick">Yarok</span>
+              <div class="skills">
+                Python, Go, Базы данных, Оптимизация запросов, REST API
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-card" data-tilt data-id="green_ya">
+          <div class="team-card-inner">
+            <div class="glare"></div>
+            <span class="rarity-badge epic">Epic</span>
+            <img src="img/green_ya.png" alt="Зеленский Ярослав" class="art" />
+            <div class="info">
+              <div class="name">Зеленский Ярослав</div>
+              <div class="role">DevOps</div>
+              <span class="nick">Green_ya</span>
+              <div class="skills">
+                CI/CD, Docker, Kubernetes, Linux, Автоматизация инфраструктуры
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-card" data-tilt data-id="murai">
+          <div class="team-card-inner">
+            <div class="glare"></div>
+            <span class="rarity-badge epic">Epic</span>
+            <img src="img/murai.png" alt="Полина" class="art" />
+            <div class="info">
+              <div class="name">Полина</div>
+              <div class="role">Фронтенд</div>
+              <span class="nick">Murai</span>
+              <div class="skills">
+                HTML/CSS, JavaScript, Vue.js, Адаптивная верстка, UI/UX
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-card" data-tilt data-id="isqqka">
+          <div class="team-card-inner">
+            <div class="glare"></div>
+            <span class="rarity-badge epic">Epic</span>
+            <img src="img/isqqka.png" alt="Ислам" class="art" />
+            <div class="info">
+              <div class="name">Ислам</div>
+              <div class="role">DevOps</div>
+              <span class="nick">isqqka</span>
+              <div class="skills">
+                CI/CD, Docker, Kubernetes, Linux, Автоматизация инфраструктуры
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-card" data-tilt data-id="tofawawa">
+          <div class="team-card-inner">
+            <div class="glare"></div>
+            <span class="rarity-badge rare">Rare</span>
+            <img src="img/tofawawa.png" alt="Рименсонс Тимофей" class="art" />
+            <div class="info">
+              <div class="name">Рименсонс Тимофей</div>
+              <div class="role">Фронтенд-разработчик</div>
+              <span class="nick">tofawawa</span>
+              <div class="skills">
+                JavaScript, Vue.js, CSS Grid, Адаптивная верстка, Pixel Art стили
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer id="contacts">
+      <div class="footer-links">
+        <a href="mailto:contact@bastion-team.ru">Email</a>
+        <a href="#about" class="footer-nav-link">О команде</a>
+        <a href="#projects" class="footer-nav-link">Проекты</a>
+      </div>
+      <a href="mailto:contact@bastion-team.ru" class="footer-email"
+        >contact@bastion-team.ru</a
+      >
+      <div class="copyright">© 2026 Bastion Team</div>
+      <!-- 
+            Реквизиты организации:
+            ИНН: [указать при регистрации]
+            ОГРН: [указать при регистрации]
+            Юридический адрес: [указать при регистрации]
+        -->
+    </footer>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal">
+        <button class="modal-close" id="modalClose" aria-label="Закрыть">×</button>
+        <div class="modal-image-wrap">
+          <img id="modalImg" src="" alt="" />
+        </div>
+        <div class="modal-body">
+          <div class="modal-header">
+            <div class="modal-name" id="modalName"></div>
+            <div class="modal-role" id="modalRole"></div>
+            <span class="modal-nick" id="modalNick"></span>
+          </div>
+          <div class="modal-section">
+            <h4>Навыки</h4>
+            <ul id="modalSkills"></ul>
+          </div>
+          <div class="modal-section">
+            <h4>Кратко о себе</h4>
+            <p class="modal-about" id="modalAbout"></p>
+          </div>
+          <div class="modal-section">
+            <h4>Контакты</h4>
+            <div class="modal-contacts">
+              <a class="modal-contact" id="modalEmail" href="" target="_blank">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
+                <span id="modalEmailText"></span>
+              </a>
+              <a class="modal-contact" id="modalTg" href="" target="_blank">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8L18.5 16.5L11 21L3.5 16.5L6 8H21Z"/><path d="M12 12V21"/><path d="M12 12L16.5 16.5"/><path d="M12 12L7.5 16.5"/></svg>
+                <span id="modalTgText"></span>
+              </a>
+              <a class="modal-contact" id="modalVk" href="" target="_blank">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.5C16 11.5 13.5 14 12 14C10.5 14 8 11.5 8 11.5"/><path d="M8 8H10"/><path d="M14 8H16"/></svg>
+                <span id="modalVkText"></span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="script/script.js"></script>
+  </body>
+</html>
