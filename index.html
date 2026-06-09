@@ -49,21 +49,30 @@
     <header id="header">
       <div class="header-inner">
         <a href="#hero" class="logo" id="logoLink">BASTION TEAM</a>
-        <button class="burger-menu" id="burger" aria-label="Меню">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
         <nav>
           <ul id="nav-menu">
             <li><a href="#about" class="nav-link">О команде</a></li>
             <li><a href="#roadmap" class="nav-link">Дорожная карта</a></li>
             <li><a href="#projects" class="nav-link">Проекты</a></li>
-            <li><a href="#reviews" class="nav-link">Отзывы</a></li>
             <li><a href="#team" class="nav-link">Команда</a></li>
             <li><a href="#contacts" class="nav-link">Контакты</a></li>
+            <li class="nav-socials">
+              <a href="https://t.me/bastionteam" target="_blank">Telegram канал</a>
+            </li>
           </ul>
         </nav>
+        <div class="header-socials">
+          <a href="https://t.me/bastionteam" target="_blank" aria-label="Telegram">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <path fill="currentColor" d="M88.723,12.142C76.419,17.238,23.661,39.091,9.084,45.047c-9.776,3.815-4.053,7.392-4.053,7.392 s8.345,2.861,15.499,5.007c7.153,2.146,10.968-0.238,10.968-0.238l33.62-22.652c11.922-8.107,9.061-1.431,6.199,1.431 c-6.199,6.2-16.452,15.975-25.036,23.844c-3.815,3.338-1.908,6.199-0.238,7.63c6.199,5.246,23.129,15.976,24.082,16.691 c5.037,3.566,14.945,8.699,16.452-2.146c0,0,5.961-37.435,5.961-37.435c1.908-12.637,3.815-24.321,4.053-27.659 C97.307,8.804,88.723,12.142,88.723,12.142z"/>
+            </svg>
+          </a>
+        </div>
+        <button class="burger-menu" id="burger" aria-label="Меню">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
     </header>
 
@@ -149,153 +158,123 @@
       </div>
     </section>
 
-    <section id="reviews">
-      <h2 class="section-title"><span>ОТЗЫВЫ</span></h2>
-      <div class="reviews-container reveal">
-        <blockquote>
-          <p>
-            "Ребята из Bastion Team помогли нам полностью перестроить
-            архитектуру серверов. Скорость работы выросла в разы, а про падения
-            мы вообще забыли. Настоящие инженеры!"
-          </p>
-          <cite>- Пользователь форума (id: 4829)</cite>
-        </blockquote>
-        <blockquote>
-          <p>
-            "Отличный подход к ИБ-аудиту. Нашли критические уязвимости там, где
-            другие специалисты даже не смотрели. Рекомендую к сотрудничеству."
-          </p>
-          <cite>- Модератор TechForum</cite>
-        </blockquote>
-      </div>
-      <a
-        href="https://forum.example.com/bastion-reviews"
-        target="_blank"
-        class="review-link"
-        >Читать все отзывы на форуме →</a
-      >
-    </section>
-
     <section id="team">
       <h2 class="section-title"><span>НАША КОМАНДА</span></h2>
-      <div class="team-grid reveal">
-        <div class="team-card" data-tilt data-id="angro">
-          <div class="team-card-inner">
-            <div class="glare"></div>
-            <span class="rarity-badge legendary">Legendary</span>
-            <img src="img/angro.png" alt="Балабанов Мирон" class="art" />
-            <div class="info">
-              <div class="name">Балабанов Мирон</div>
-              <div class="role">Проджект менеджер</div>
-              <span class="nick">Angro</span>
-              <div class="skills">
-                Управление рисками, SCRUM, Agile, планирование спринтов
+      <div class="team-carousel-wrapper reveal">
+        <button class="team-nav-btn prev" id="teamPrev" aria-label="Назад">‹</button>
+        <div class="team-carousel" id="teamCarousel">
+          <div class="team-track" id="teamTrack">
+            <div class="team-card" data-tilt data-id="angro">
+              <div class="team-card-inner">
+                <div class="glare"></div>
+                <span class="rarity-badge legendary">Legendary</span>
+                <img src="img/angro.png" alt="Балабанов Мирон" class="art" />
+                <div class="info">
+                  <div class="name">Балабанов Мирон</div>
+                  <div class="role">Проджект менеджер</div>
+                  <span class="nick">Angro</span>
+                  <div class="skills">
+                    Управление рисками, SCRUM, Agile, планирование спринтов
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div class="team-card" data-tilt data-id="yarok">
-          <div class="team-card-inner">
-            <div class="glare"></div>
-            <span class="rarity-badge epic">Epic</span>
-            <img src="img/yarok.png" alt="Кирсанов Ярослав" class="art" />
-            <div class="info">
-              <div class="name">Кирсанов Ярослав</div>
-              <div class="role">Бэкенд-разработчик</div>
-              <span class="nick">Yarok</span>
-              <div class="skills">
-                Python, Rust, Docker, Kubernetes, Автоматизация
+            <div class="team-card" data-tilt data-id="yarok">
+              <div class="team-card-inner">
+                <div class="glare"></div>
+                <span class="rarity-badge epic">Epic</span>
+                <img src="img/yarok.png" alt="Кирсанов Ярослав" class="art" />
+                <div class="info">
+                  <div class="name">Кирсанов Ярослав</div>
+                  <div class="role">Бэкенд-разработчик</div>
+                  <span class="nick">Yarok</span>
+                  <div class="skills">
+                    Python, Rust, Docker, Kubernetes, Автоматизация
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div class="team-card" data-tilt data-id="green_ya">
-          <div class="team-card-inner">
-            <div class="glare"></div>
-            <span class="rarity-badge epic">Epic</span>
-            <img src="img/green_ya.png" alt="Зеленский Ярослав" class="art" />
-            <div class="info">
-              <div class="name">Зеленский Ярослав</div>
-              <div class="role">DevOps</div>
-              <span class="nick">Green_ya</span>
-              <div class="skills">
-                CI/CD, Docker, Kubernetes, Linux, Автоматизация инфраструктуры
+            <div class="team-card" data-tilt data-id="green_ya">
+              <div class="team-card-inner">
+                <div class="glare"></div>
+                <span class="rarity-badge epic">Epic</span>
+                <img src="img/green_ya.png" alt="Зеленский Ярослав" class="art" />
+                <div class="info">
+                  <div class="name">Зеленский Ярослав</div>
+                  <div class="role">DevOps</div>
+                  <span class="nick">Green_ya</span>
+                  <div class="skills">
+                    CI/CD, Docker, Kubernetes, Linux, Автоматизация инфраструктуры
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div class="team-card" data-tilt data-id="murai">
-          <div class="team-card-inner">
-            <div class="glare"></div>
-            <span class="rarity-badge epic">Epic</span>
-            <img src="img/murai.png" alt="Полина" class="art" />
-            <div class="info">
-              <div class="name">Полина</div>
-              <div class="role">Фронтенд</div>
-              <span class="nick">Murai</span>
-              <div class="skills">
-                HTML/CSS, JavaScript, Vue.js, Адаптивная верстка, UI/UX
+            <div class="team-card" data-tilt data-id="murai">
+              <div class="team-card-inner">
+                <div class="glare"></div>
+                <span class="rarity-badge epic">Epic</span>
+                <img src="img/murai.png" alt="Полина" class="art" />
+                <div class="info">
+                  <div class="name">Полина</div>
+                  <div class="role">Фронтенд</div>
+                  <span class="nick">Murai</span>
+                  <div class="skills">
+                    HTML/CSS, JavaScript, Vue.js, Адаптивная верстка, UI/UX
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div class="team-card" data-tilt data-id="isqqka">
-          <div class="team-card-inner">
-            <div class="glare"></div>
-            <span class="rarity-badge epic">Epic</span>
-            <img src="img/isqqka.png" alt="Ислам" class="art" />
-            <div class="info">
-              <div class="name">Ислам</div>
-              <div class="role">DevOps</div>
-              <span class="nick">isqqka</span>
-              <div class="skills">
-                CI/CD, Docker, Kubernetes, Linux, Автоматизация инфраструктуры
+            <div class="team-card" data-tilt data-id="isqqka">
+              <div class="team-card-inner">
+                <div class="glare"></div>
+                <span class="rarity-badge epic">Epic</span>
+                <img src="img/isqqka.png" alt="Ислам" class="art" />
+                <div class="info">
+                  <div class="name">Ислам</div>
+                  <div class="role">DevOps</div>
+                  <span class="nick">isqqka</span>
+                  <div class="skills">
+                    CI/CD, Docker, Kubernetes, Linux, Автоматизация инфраструктуры
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        <div class="team-card" data-tilt data-id="tofawawa">
-          <div class="team-card-inner">
-            <div class="glare"></div>
-            <span class="rarity-badge rare">Rare</span>
-            <img src="img/tofawawa.png" alt="Рименсонс Тимофей" class="art" />
-            <div class="info">
-              <div class="name">Рименсонс Тимофей</div>
-              <div class="role">Фронтенд-разработчик</div>
-              <span class="nick">tofawawa</span>
-              <div class="skills">
-                JavaScript, Vue.js, CSS Grid, Адаптивная верстка, Pixel Art стили
-              </div>
-            </div>
-          </div>
-        </div>
+        <button class="team-nav-btn next" id="teamNext" aria-label="Вперёд">›</button>
       </div>
     </section>
 
     <footer id="contacts">
-      <div class="footer-links">
-        <a href="mailto:contact@bastion-team.ru">Email</a>
-        <a href="#about" class="footer-nav-link">О команде</a>
-        <a href="#projects" class="footer-nav-link">Проекты</a>
+      <div class="footer-grid">
+        <div class="footer-col footer-requisites">
+          <h4>Реквизиты</h4>
+          <p>Самозанятый: Мирон Балабанов Николаевич</p>
+          <p>ИНН: 744518360220</p>
+        </div>
+
+        <div class="footer-col footer-center">
+          <div class="footer-links">
+            <a href="#about" class="footer-nav-link">О команде</a>
+            <a href="#projects" class="footer-nav-link">Проекты</a>
+          </div>
+          <a href="mailto:contact@bastion-team.ru" class="footer-email">contact@bastion-team.ru</a>
+          <div class="copyright">© 2026 Bastion Team</div>
+          <a href="#" class="privacy-link">Политика конфиденциальности</a>
+        </div>
+
+        <div class="footer-col footer-contacts">
+          <h4>Контакты</h4>
+          <p>Email: <a href="mailto:AngroLensi@yandex.com">AngroLensi@yandex.com</a></p>
+          <p>Telegram: <a href="https://t.me/MironBalabanov" target="_blank">@MironBalabanov</a></p>
+        </div>
       </div>
-      <a href="mailto:contact@bastion-team.ru" class="footer-email"
-        >contact@bastion-team.ru</a
-      >
-      <div class="copyright">© 2026 Bastion Team</div>
-      <!-- 
-            Реквизиты организации:
-            ИНН: [указать при регистрации]
-            ОГРН: [указать при регистрации]
-            Юридический адрес: [указать при регистрации]
-        -->
     </footer>
 
-    <!-- Modal -->
     <div class="modal-overlay" id="modalOverlay">
       <div class="modal">
         <button class="modal-close" id="modalClose" aria-label="Закрыть">×</button>
