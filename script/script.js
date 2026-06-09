@@ -162,9 +162,16 @@ let currentTranslate = 0;
 let prevTranslate = 0;
 let dragDistance = 0;
 let isTransitioning = false;
+let transitionFallbackTimer = null;
 
 function getCardWidth() {
-  return allCards[0].offsetWidth + 24;
+  return allCards[0] ? allCards[0].offsetWidth : 300;
+}
+
+function getGap() {
+  const style = window.getComputedStyle(teamTrack);
+  const gapValue = style.gap || style.columnGap;
+  return gapValue ? parseInt(gapValue, 10) : 24;
 }
 
 function getCarouselWidth() {
@@ -173,10 +180,16 @@ function getCarouselWidth() {
 
 function setPositionByIndex(animate = true) {
   const cardWidth = getCardWidth();
+  const gap = getGap();
   const carouselWidth = getCarouselWidth();
-  const offset = carouselWidth / 2 - cardWidth / 2 - currentIndex * cardWidth;
+
+  const offset =
+    carouselWidth / 2 - cardWidth / 2 - currentIndex * (cardWidth + gap);
+
+  clearTimeout(transitionFallbackTimer);
 
   if (!animate) {
+    isTransitioning = false;
     allCards.forEach((card) => (card.style.transition = "none"));
     teamTrack.style.transition = "none";
     teamTrack.offsetHeight;
@@ -192,6 +205,10 @@ function setPositionByIndex(animate = true) {
       "transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
     teamTrack.style.transform = `translateX(${offset}px)`;
     updateClasses();
+
+    transitionFallbackTimer = setTimeout(() => {
+      isTransitioning = false;
+    }, 700);
   }
 
   prevTranslate = offset;
@@ -218,6 +235,7 @@ function updateClasses() {
 }
 
 function checkLoop() {
+  clearTimeout(transitionFallbackTimer);
   if (isDragging) return;
 
   let resetIndex = null;
@@ -289,24 +307,33 @@ teamCarousel.addEventListener("mouseup", touchEnd);
 teamCarousel.addEventListener("mouseleave", touchEnd);
 teamCarousel.addEventListener("touchend", touchEnd);
 
-prevBtn.addEventListener("click", () => {
+prevBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
   if (isTransitioning) return;
   currentIndex--;
   setPositionByIndex();
 });
 
-nextBtn.addEventListener("click", () => {
+nextBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
   if (isTransitioning) return;
   currentIndex++;
   setPositionByIndex();
 });
 
+let resizeTimeout;
 window.addEventListener("resize", () => {
-  requestAnimationFrame(() => setPositionByIndex(false));
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    isTransitioning = false;
+    clearTimeout(transitionFallbackTimer);
+    requestAnimationFrame(() => setPositionByIndex(false));
+  }, 150);
 });
 
 teamTrack.addEventListener("click", (e) => {
   if (dragDistance > 10) return;
+  if (e.target.closest(".team-nav-btn")) return;
   const card = e.target.closest(".team-card");
   if (!card) return;
   const id = card.dataset.id;
@@ -315,17 +342,30 @@ teamTrack.addEventListener("click", (e) => {
 
 initTilt();
 
-// Фикс: ждём полной загрузки ВСЕХ изображений на странице перед инициализацией карусели
 function initCarousel() {
-  const allImages = document.querySelectorAll("img");
-  const totalImages = allImages.length;
+  const trackImages = teamTrack.querySelectorAll("img");
+  const totalImages = trackImages.length;
   let loadedImages = 0;
   let initialized = false;
 
   function tryInit() {
     if (initialized) return;
     loadedImages++;
-    if (loadedImages >= totalImages || document.readyState === "complete") {
+
+    const cardWidthReady = allCards.length > 0 && allCards[0].offsetWidth > 0;
+
+    if (
+      cardWidthReady &&
+      (loadedImages >= totalImages || document.readyState === "complete")
+    ) {
+      initialized = true;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => setPositionByIndex(false));
+      });
+    } else if (
+      loadedImages >= totalImages ||
+      document.readyState === "complete"
+    ) {
       initialized = true;
       requestAnimationFrame(() => {
         requestAnimationFrame(() => setPositionByIndex(false));
@@ -340,7 +380,7 @@ function initCarousel() {
     return;
   }
 
-  allImages.forEach((img) => {
+  trackImages.forEach((img) => {
     if (img.complete && img.naturalHeight !== 0) {
       tryInit();
     } else {
@@ -349,7 +389,6 @@ function initCarousel() {
     }
   });
 
-  // Fallback: принудительная инициализация через 2 секунды
   setTimeout(() => {
     if (!initialized) {
       initialized = true;
@@ -433,6 +472,41 @@ const modalOverlay = document.getElementById("modalOverlay");
 const modalClose = document.getElementById("modalClose");
 const modalImg = document.getElementById("modalImg");
 
+function preventScroll(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  return false;
+}
+
+function preventKeys(e) {
+  const keys = [
+    "ArrowUp",
+    "ArrowDown",
+    "ArrowLeft",
+    "ArrowRight",
+    "PageUp",
+    "PageDown",
+    "Home",
+    "End",
+    "Space",
+  ];
+  if (keys.includes(e.key)) {
+    e.preventDefault();
+  }
+}
+
+function lockScroll() {
+  window.addEventListener("wheel", preventScroll, { passive: false });
+  window.addEventListener("touchmove", preventScroll, { passive: false });
+  window.addEventListener("keydown", preventKeys);
+}
+
+function unlockScroll() {
+  window.removeEventListener("wheel", preventScroll, { passive: false });
+  window.removeEventListener("touchmove", preventScroll, { passive: false });
+  window.removeEventListener("keydown", preventKeys);
+}
+
 function openModal(id) {
   const data = teamData[id];
   if (!data) return;
@@ -455,6 +529,7 @@ function openModal(id) {
   document.getElementById("modalVk").href = `https://${data.contacts.vk}`;
   document.getElementById("modalVkText").textContent = data.contacts.vk;
 
+  lockScroll();
   modalOverlay.classList.add("active");
   document.body.classList.add("modal-open");
 }
@@ -462,6 +537,7 @@ function openModal(id) {
 function closeModal() {
   modalOverlay.classList.remove("active");
   document.body.classList.remove("modal-open");
+  unlockScroll();
 }
 
 modalClose.addEventListener("click", closeModal);
