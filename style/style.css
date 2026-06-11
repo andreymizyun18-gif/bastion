@@ -437,6 +437,16 @@ section {
   border: 3px solid var(--bg-primary);
 }
 
+.timeline-item.in-progress::before {
+  background: #fbbf24;
+  box-shadow: 0 0 20px #fbbf24;
+}
+
+.timeline-item.pending::before {
+  background: #475569;
+  box-shadow: none;
+}
+
 .timeline-item:hover {
   transform: translateY(-8px);
   border-color: rgba(45, 212, 191, 0.3);
@@ -451,6 +461,14 @@ section {
   margin-top: 10px;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.timeline-item.in-progress h3 {
+  color: #fbbf24;
+}
+
+.timeline-item.pending h3 {
+  color: #64748b;
 }
 
 .timeline-item ul {
@@ -471,6 +489,14 @@ section {
   left: 0;
   color: var(--accent-cyan);
   font-weight: 700;
+}
+
+.timeline-item.in-progress li::before {
+  color: #fbbf24;
+}
+
+.timeline-item.pending li::before {
+  color: #475569;
 }
 
 .grid {
@@ -543,6 +569,7 @@ section {
   overflow: visible;
   perspective: 1200px;
   cursor: grab;
+  touch-action: pan-y pinch-zoom;
 }
 
 .team-carousel:active {
@@ -680,6 +707,13 @@ section {
   );
   z-index: 4;
   transform: translateZ(20px);
+}
+
+.team-card.far-left .info,
+.team-card.far-right .info,
+.team-card.hidden .info {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .team-card .info .name {
