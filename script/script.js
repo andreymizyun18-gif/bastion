@@ -279,7 +279,6 @@ function touchMove(event) {
     dragDistance = Math.abs(diff);
     currentTranslate = prevTranslate + diff;
     teamTrack.style.transform = `translateX(${currentTranslate}px)`;
-    if (event.type === "touchmove") event.preventDefault();
   }
 }
 
@@ -302,7 +301,7 @@ function touchEnd() {
 teamCarousel.addEventListener("mousedown", touchStart);
 teamCarousel.addEventListener("touchstart", touchStart);
 teamCarousel.addEventListener("mousemove", touchMove);
-teamCarousel.addEventListener("touchmove", touchMove, { passive: false });
+teamCarousel.addEventListener("touchmove", touchMove, { passive: true });
 teamCarousel.addEventListener("mouseup", touchEnd);
 teamCarousel.addEventListener("mouseleave", touchEnd);
 teamCarousel.addEventListener("touchend", touchEnd);
